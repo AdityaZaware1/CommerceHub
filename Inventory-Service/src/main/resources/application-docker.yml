@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: Inventory-Service
+  datasource:
+    url: jdbc:mysql://mysql:3307/commercehub
+    username: user
+    password: pass
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka
+
+server:
+  port: 7074
+
+user:
+  service:
+    url: http://accessservice:7071
+
+store:
+  service:
+    url: http://storeservice:7072
+
+branch:
+  service:
+    url: http://branchservice:7073

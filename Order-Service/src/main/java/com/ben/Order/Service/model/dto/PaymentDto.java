@@ -1,0 +1,17 @@
+package com.ben.Order.Service.model.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class PaymentDto {
+
+    private Long amount;
+    private Long userId;
+    private Long orderId;
+}

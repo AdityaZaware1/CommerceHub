@@ -1,0 +1,67 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: Users
+          uri: http://accessservice:7071
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - AuthenticationFilter
+
+        - id: AUTH
+          uri: http://accessservice:7071
+          predicates:
+            - Path=/auth/**
+            - Path=/admin/subscription
+
+        - id: Store-Service
+          uri: http://storeservice:7072
+          predicates:
+            - Path=/api/store/**
+          filters:
+            - AuthenticationFilter
+
+        - id: Order-Service
+          uri: http://orderservice:7075
+          predicates:
+            - Path=/api/orders/**
+            - Path=/api/products/**
+            - Path=/api/category/**
+          filters:
+            - AuthenticationFilter
+
+        - id: Inventory-Service
+          uri: http://inventoryservice:7074
+          predicates:
+            - Path=/api/inventory/**
+          filters:
+            - AuthenticationFilter
+
+        - id: Branch-Service
+          uri: http://branchservice:7073
+          predicates:
+            - Path=/api/branch/**
+          filters:
+            - AuthenticationFilter
+
+        - id: Payment-Service
+          uri: http://paymentservice:7076
+          predicates:
+            - Path=/api/payment/**
+          filters:
+            - AuthenticationFilter
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka:8761/eureka
+

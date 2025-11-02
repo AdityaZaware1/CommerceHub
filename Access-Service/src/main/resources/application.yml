@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: Access-Service
+  datasource:
+    url: jdbc:mysql://localhost:3307/commercehub
+    username: user
+    password: pass
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: zawareaditya04@gmail.com
+    password: fuat eiek jhtb bpml
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+
+server:
+  port: 7071
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+

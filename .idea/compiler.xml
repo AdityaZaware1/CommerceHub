@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Eureka-Server" />
+        <module name="api" />
+      </profile>
+      <profile name="Annotation profile for Store-Service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.40/lombok-1.18.40.jar" />
+        </processorPath>
+        <module name="Store-Service" />
+        <module name="Access-Service" />
+      </profile>
+      <profile name="Annotation profile for Payment-Service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
+        </processorPath>
+        <module name="Inventory-Service" />
+        <module name="Order-Service" />
+        <module name="Branch-Service" />
+        <module name="Payment-Service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Api-Gateway" target="17" />
+      <module name="User-Service" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Access-Service" options="-parameters" />
+      <module name="Api-Gateway" options="-parameters" />
+      <module name="Branch-Service" options="-parameters" />
+      <module name="Eureka-Server" options="-parameters" />
+      <module name="Inventory-Service" options="-parameters" />
+      <module name="Order-Service" options="-parameters" />
+      <module name="Payment-Service" options="-parameters" />
+      <module name="Store-Service" options="-parameters" />
+      <module name="User-Service" options="-parameters" />
+      <module name="api" options="-parameters" />
+    </option>
+  </component>
+</project>

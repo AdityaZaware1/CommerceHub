@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    tools{
+        maven 'maven'
+        dockerTool 'docker'
+    }
+
+    stages{
+
+        stage('Checkout code'){
+            steps{
+                git branch: 'master', url: 'https://github.com/AdityaZaware1/CommerceHub'
+            }
+        }
+
+        stage("Build Maven"){
+            steps{
+                dir('apis'){
+                    sh 'mvn clean install -DskipTests'
+                }
+
+            }
+        }
+        stage("Build Docker Image"){
+            steps{
+                dir('apis'){
+                    sh 'docker build -t adityazaware/apis .'
+                }
+            }
+        }
+
+        stage('Push to Dokcer hub'){
+            steps{
+                script{
+                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'DOCKERHUB_PWD')]) {
+                        sh """
+                            docker login -u adityazaware -p $DOCKERHUB_PWD
+                            docker push adityazaware/apis
+                        """
+                    }
+                }
+            }
+        }
+    }
+}

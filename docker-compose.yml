@@ -1,0 +1,95 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: commercehub
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - commercehub
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - commercehub
+
+  jenkins:
+    image: jenkins/jenkins
+    container_name: jenkins
+    privileged: true          # ✅ allows container to run Docker commands
+    user: root                # ✅ ensures Jenkins runs as root user
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - commercehub
+
+#  zookeeper:
+#    image: confluentinc/cp-zookeeper:latest
+#    container_name: zookeeper
+#    environment:
+#      ZOOKEEPER_CLIENT_PORT: 2181
+#      ZOOKEEPER_TICK_TIME: 2000
+#      ZOOKEEPER_SERVER_ID: 1
+#    ports:
+#      - 22181:2181
+#    networks:
+#      - commercehub
+#    restart: unless-stopped
+#
+#  kafka:
+#    image: confluentinc/cp-kafka:latest
+#    container_name: kafka
+#    ports:
+#      - "9092:9092"
+#    depends_on:
+#      - zookeeper
+#    environment:
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+#      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+#    networks:
+#      - commercehub
+#
+#  eureka:
+#    image: adityazaware/eureka
+#    container_name: eureka
+#    ports:
+#      - "8761:8761"
+#    networks:
+#      - commercehub
+
+
+
+networks:
+  commercehub:
+    driver: bridge
+
+volumes:
+  mysql:
+  jenkins_home:
