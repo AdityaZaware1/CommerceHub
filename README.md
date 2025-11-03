@@ -3,6 +3,10 @@
 Commercehub is centralized SaaS platform that enables vendors to manage their shops and branches while allowing users to place and track orders seamlessly — built using Spring Boot microservices, Docker, Kubernetes, and Jenkins for scalability and automation.  
 This project demonstrates a modular architecture with multiple services: order management, inventory, payment, store, branch, etc., all coordinated via service discovery, Docker, Kubernetes, and Jenkins.
 
+## Architecutre Diagram
+
+![image alt](https://github.com/AdityaZaware1/CommerceHub/blob/e6e1a158eceb02a69b915f1450e330b9b786f521/Commerhub.png)
+
 ## 📦 Services
 
 | Service               | Description                                                                               |
