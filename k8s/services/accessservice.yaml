@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accessservice
+  namespace: commercehub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accessservice
+  template:
+    metadata:
+      labels:
+        app: accessservice
+    spec:
+      containers:
+        - name: accessservice
+          image: adityazaware/accessservice
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/commercehub
+            - name: SPRING_DATASOURCE_USERNAME
+              value: user
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: pass
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://eureka:8761/eureka
+          ports:
+            - containerPort: 7071
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 7071
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 7071
+            initialDelaySeconds: 30
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accessservice
+  namespace: commercehub
+spec:
+  selector:
+    app: accessservice
+  ports:
+    - port: 7071
+      targetPort: 7071
+  type: ClusterIP
