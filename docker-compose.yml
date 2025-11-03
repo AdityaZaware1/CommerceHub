@@ -45,46 +45,170 @@ services:
     networks:
       - commercehub
 
-#  zookeeper:
-#    image: confluentinc/cp-zookeeper:latest
-#    container_name: zookeeper
-#    environment:
-#      ZOOKEEPER_CLIENT_PORT: 2181
-#      ZOOKEEPER_TICK_TIME: 2000
-#      ZOOKEEPER_SERVER_ID: 1
-#    ports:
-#      - 22181:2181
-#    networks:
-#      - commercehub
-#    restart: unless-stopped
-#
-#  kafka:
-#    image: confluentinc/cp-kafka:latest
-#    container_name: kafka
-#    ports:
-#      - "9092:9092"
-#    depends_on:
-#      - zookeeper
-#    environment:
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-#      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-#      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-#    networks:
-#      - commercehub
-#
-#  eureka:
-#    image: adityazaware/eureka
-#    container_name: eureka
-#    ports:
-#      - "8761:8761"
-#    networks:
-#      - commercehub
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+    networks:
+      - commercehub
+    restart: unless-stopped
 
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    networks:
+      - commercehub
+    restart: unless-stopped
 
+  eureka:
+    image: adityazaware/eureka
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - commercehub
+
+  apis:
+    image: adityazaware/apigateway
+    container_name: apiserver
+    ports:
+      - "9090:9090"
+    depends_on:
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+
+    networks:
+      - commercehub
+
+  accessservice:
+    image: adityazaware/accessservice
+    container_name: accessservice
+    ports:
+      - "7071:7071"
+    depends_on:
+      - eureka
+      - mysql
+      - apis
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/commercehub
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+    networks:
+      - commercehub
+
+  storeservice:
+    image: adityazaware/stoerservice
+    container_name: storeservice
+    ports:
+      - "7072:7072"
+    depends_on:
+      - eureka
+      - mysql
+      - kafka
+      - apis
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/commercehub
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+    networks:
+      - commercehub
+
+  branchservice:
+    image: adityazaware/branchservice
+    container_name: branchservice
+    ports:
+      - "7073:7073"
+    depends_on:
+      - eureka
+      - mysql
+      - apis
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/commercehub
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+    networks:
+      - commercehub
+
+  inventoryservice:
+    image: adityazaware/inventoryservice
+    container_name: inventoryservice
+    ports:
+      - "7074:7074"
+    depends_on:
+      - eureka
+      - mysql
+      - apis
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/commercehub
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+    networks:
+      - commercehub
+
+  orderservice:
+    image: adityazaware/orderservice
+    container_name: orderservice
+    ports:
+      - "7075:7075"
+    depends_on:
+      - eureka
+      - mysql
+      - apis
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/commercehub
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+    networks:
+      - commercehub
+
+  paymentservice:
+    image: adityazaware/paymentservice
+    container_name: paymentservice
+    ports:
+      - "7076:7076"
+    depends_on:
+      - eureka
+      - mysql
+      - kafka
+      - apis
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/commercehub
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+    networks:
+      - commercehub
 
 networks:
   commercehub:

@@ -10,16 +10,6 @@
         <module name="Eureka-Server" />
         <module name="api" />
       </profile>
-      <profile name="Annotation profile for Store-Service" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.40/lombok-1.18.40.jar" />
-        </processorPath>
-        <module name="Store-Service" />
-        <module name="Access-Service" />
-      </profile>
       <profile name="Annotation profile for Payment-Service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -31,6 +21,16 @@
         <module name="Order-Service" />
         <module name="Branch-Service" />
         <module name="Payment-Service" />
+      </profile>
+      <profile name="Annotation profile for Store-Service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="Store-Service" />
+        <module name="Access-Service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
